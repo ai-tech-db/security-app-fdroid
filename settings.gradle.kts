@@ -26,15 +26,15 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
 
-    val storageUrl: String =
-        System.getenv("FLUTTER_STORAGE_BASE_URL")
-            ?: "https://storage.googleapis.com"
-
     repositories {
         google()
         mavenCentral()
-        maven("$storageUrl/download.flutter.io")
-        maven(url = file("security_ui/build/host/outputs/repo"))
+        maven {
+            url = uri("https://storage.googleapis.com/download.flutter.io")
+        }
+        maven {
+            url = uri("security_ui/build/host/outputs/repo")
+        }
     }
 }
 
