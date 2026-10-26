@@ -29,12 +29,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://storage.googleapis.com/download.flutter.io")
-        }
-        maven {
-            url = uri("security_ui/build/host/outputs/repo")
-        }
     }
 }
 

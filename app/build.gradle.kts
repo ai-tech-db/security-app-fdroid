@@ -8,10 +8,6 @@ plugins {
 android {
     namespace = "com.tacu.nsfwzerotrust"
     compileSdk = 36
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -24,20 +20,19 @@ android {
         jvmTarget = "17"
     }
 
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
-
     defaultConfig {
         applicationId = "io.github.aitechdb.securityapp"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        buildConfigField("boolean", "BLOCK_ALL_SCREENSHOTS", "false")
 
         ndk {
             abiFilters.add("arm64-v8a")
+        }
+        buildFeatures {
+            buildConfig = true
+            compose = true
         }
     }
 
@@ -77,7 +72,6 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.10")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
@@ -92,21 +86,14 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.compose.ui:ui:1.6.8")
     implementation("androidx.compose.material3:material3:1.2.1")
-    implementation("androidx.compose.material:material-icons-core:1.6.8")
-    implementation("androidx.compose.material:material-icons-extended:1.6.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.8")
     implementation("androidx.activity:activity-compose:1.9.1")
-    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
-    implementation("com.maxmind.geoip2:geoip2:4.2.0")
-    implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.compose.material:material-icons-core:1.6.8")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
-    debugImplementation("com.aitechdb.security_ui:flutter_debug:1.0")
-    releaseImplementation("com.aitechdb.security_ui:flutter_release:1.0")
-    add("profileImplementation", "com.aitechdb.security_ui:flutter_profile:1.0")
-}
-
-configurations {
-    getByName("profileImplementation") {
-    }
+    // Usa gli AAR locali invece del repository Maven
+    debugImplementation(files("libs/flutter_debug.aar"))
+    releaseImplementation(files("libs/flutter_release.aar"))
+    add("profileImplementation", files("libs/flutter_profile.aar"))
 }
