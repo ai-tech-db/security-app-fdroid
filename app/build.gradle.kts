@@ -30,7 +30,7 @@ android {
         applicationId = "io.github.aitechdb.securityapp"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
+        versionCode = 2003
         versionName = "1.0"
 
         ndk {
