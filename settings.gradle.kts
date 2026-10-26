@@ -25,7 +25,6 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-
     repositories {
         google()
         mavenCentral()
@@ -34,3 +33,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TacUNS"
 include(":app")
+include(":security_ui")
