@@ -92,8 +92,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core:1.6.8")
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
-    // Usa gli AAR locali invece del repository Maven
-    debugImplementation(files("libs/flutter_debug.aar"))
+    // Usa SOLO l'AAR Release (le varianti Debug e Profile non servono su F-Droid)
     releaseImplementation(files("libs/flutter_release.aar"))
-    add("profileImplementation", files("libs/flutter_profile.aar"))
 }
