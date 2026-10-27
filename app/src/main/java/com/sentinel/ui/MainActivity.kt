@@ -10,8 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import com.sentinel.core.logs.LogManager
-import com.sentinel.core.logs.LogRetention
-import com.sentinel.core.rules.FirewallOptionsStore
 import com.sentinel.core.rules.RuleEngine
 import com.sentinel.core.vpn.SentinelVpnService
 import io.flutter.embedding.android.FlutterActivity
@@ -79,58 +77,19 @@ class MainActivity : FlutterActivity() {
                             }
                             "getStatus" -> result.success(SentinelVpnService.isRunning.value)
                             "getInstalledApps" -> result.success(getInstalledApps())
-                            "getBlacklist" -> {
-                                result.success(ruleEngine.getUserBlockedDomains())
-                            }
-                            "getLogRetention" -> {
-                                val hours = FirewallOptionsStore.read(this@MainActivity).logRetentionHours
-                                val label = when (hours) {
-                                    LogRetention.OFF -> "OFF"
-                                    LogRetention.HOURS_24 -> "24H"
-                                    LogRetention.DAYS_3 -> "3D"
-                                    else -> "${hours}H"
-                                }
-                                result.success(label)
-                            }
-                            "exitApp" -> {
-                                val serviceIntent = Intent(this@MainActivity, SentinelVpnService::class.java)
-                                serviceIntent.action = SentinelVpnService.ACTION_STOP
-                                startService(serviceIntent)
-                                result.success(true)
-                                // Distruggi l'engine Flutter per forzare un riavvio pulito
-                                FlutterEngineCache.getInstance().get(engineId)?.destroy()
-                                FlutterEngineCache.getInstance().remove(engineId)
-                                finishAffinity()
-                            }
-                            "setLogRetention" -> {
-                                val label = call.argument<String>("value")
-                                val hours = when (label) {
-                                    "OFF" -> LogRetention.OFF
-                                    "24H" -> LogRetention.HOURS_24
-                                    "3D" -> LogRetention.DAYS_3
-                                    else -> LogRetention.DEFAULT_HOURS
-                                }
-                                FirewallOptionsStore.update(this@MainActivity) {
-                                    it.copy(logRetentionHours = hours)
-                                }
-                                LogManager.setRetentionHours(hours)
-                                LogManager.trimNow()
-                                result.success(true)
-                            }
+                            "getBlacklist" -> result.success(ruleEngine.getUserBlockedDomains())
                             "addToBlacklist" -> {
                                 val domain = call.argument<String>("domain")
-                                if (domain == null) {
-                                    result.error("ARG", "domain mancante", null)
-                                } else {
+                                if (domain == null) result.error("ARG", "domain mancante", null)
+                                else {
                                     ruleEngine.addBlockRule(domain, -1, "", "USER")
                                     result.success(ruleEngine.getUserBlockedDomains())
                                 }
                             }
                             "removeFromBlacklist" -> {
                                 val domain = call.argument<String>("domain")
-                                if (domain == null) {
-                                    result.error("ARG", "domain mancante", null)
-                                } else {
+                                if (domain == null) result.error("ARG", "domain mancante", null)
+                                else {
                                     ruleEngine.removeBlockRule(domain)
                                     result.success(ruleEngine.getUserBlockedDomains())
                                 }
