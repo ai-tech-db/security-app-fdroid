@@ -13,6 +13,7 @@ android {
     }
 
 
+
     namespace = "com.tacu.nsfwzerotrust"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
