@@ -6,11 +6,6 @@ plugins {
 }
 
 android {
-    repositories {
-        flatDir {
-            dirs("/tmp/flutter_aar")
-        }
-    }
 
 
 
@@ -101,5 +96,5 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
     // Usa SOLO l'AAR Release (le varianti Debug e Profile non servono su F-Droid)
-    releaseImplementation(group = "", name = "flutter_release-1.0", ext = "aar")
+    releaseImplementation(files("/tmp/flutter_aar/flutter_release-1.0.aar"))
 }
