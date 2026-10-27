@@ -29,8 +29,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         // Repository ufficiale degli artefatti del motore Flutter
-        val storageUrl = System.getenv("FLUTTER_STORAGE_BASE_URL") ?: "https://storage.googleapis.com"
-        maven("$storageUrl/download.flutter.io")
+        maven("https://storage.googleapis.com/download.flutter.io")
     }
 }
 
