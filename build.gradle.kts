@@ -14,6 +14,6 @@ subprojects {
 
 tasks.matching { it.name.startsWith("compileFlutterBuild") }.configureEach {
     if (this is Exec) {
-        workingDir = file("/security_ui")
+        workingDir = file("security_ui")
     }
 }

@@ -28,9 +28,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Repository ufficiale degli artefatti del motore Flutter
+        val storageUrl = System.getenv("FLUTTER_STORAGE_BASE_URL") ?: "https://storage.googleapis.com"
+        maven("$storageUrl/download.flutter.io")
     }
 }
 
 rootProject.name = "TacUNS"
 include(":app")
-include(":security_ui")
+apply(from = file("security_ui/.android/include_flutter.groovy"))

@@ -6,6 +6,12 @@ plugins {
 }
 
 android {
+    repositories {
+        flatDir {
+            dirs("/tmp/flutter_aar")
+        }
+    }
+
 
     namespace = "com.tacu.nsfwzerotrust"
     compileSdk = 36
@@ -94,5 +100,5 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
     // Usa SOLO l'AAR Release (le varianti Debug e Profile non servono su F-Droid)
-    implementation(project(":flutter"))
+    releaseImplementation("flutter_release:1.0@aar")
 }
