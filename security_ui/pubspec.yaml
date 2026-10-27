@@ -25,10 +25,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/config/
 
-  # Sezione obbligatoria per flutter build aar
+  # Configurazione del modulo Flutter per la generazione AAR
   module:
     androidX: true
     androidPackage: com.aitechdb.security_ui
@@ -45,3 +43,4 @@ dependency_overrides:
   camera_android_camerax: 0.7.1
   file_selector_android: 0.5.2+4
   image_picker_android: 0.8.13+14
+
