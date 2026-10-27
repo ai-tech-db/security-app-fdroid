@@ -75,6 +75,17 @@ android {
 }
 
 dependencies {
+    // Compose per le vecchie schermate native
+    implementation("androidx.compose.ui:ui:1.6.8")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.8")
+    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
+    
+    // Coil per AsyncImage
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
