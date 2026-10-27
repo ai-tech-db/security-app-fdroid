@@ -101,5 +101,5 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
     // Usa SOLO l'AAR Release (le varianti Debug e Profile non servono su F-Droid)
-    releaseImplementation(name = "flutter_release-1.0", ext = "aar")
+    releaseImplementation(group = "", name = "flutter_release-1.0", ext = "aar")
 }
