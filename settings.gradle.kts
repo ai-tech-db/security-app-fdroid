@@ -27,15 +27,11 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
 
     repositories {
-        maven {
-            url = uri("/tmp/flutter_aar")
-            metadataSources { mavenPom(); artifact() }
-        }
+        google()
+        mavenCentral()
         flatDir {
             dirs("/tmp/flutter_aar")
         }
-        google()
-        mavenCentral()
     }
 }
 
