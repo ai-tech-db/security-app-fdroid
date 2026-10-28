@@ -12,6 +12,9 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs("/tmp/flutter_aar")
+        }
         gradlePluginPortal()
     }
 

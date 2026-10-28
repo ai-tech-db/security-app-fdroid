@@ -102,7 +102,7 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
 
     debugImplementation("com.aitechdb.security_ui:flutter_debug:1.0")
-    releaseImplementation(files("/tmp/flutter_aar/flutter_release-1.0.aar"))
+    releaseImplementation(name = "flutter_release-1.0", ext = "aar")
     add("profileImplementation", "com.aitechdb.security_ui:flutter_profile:1.0")
 }
 
