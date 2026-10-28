@@ -12,9 +12,6 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
-        flatDir {
-            dirs("/tmp/flutter_aar")
-        }
         gradlePluginPortal()
     }
 
@@ -28,14 +25,15 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+
     repositories {
         google()
         mavenCentral()
-        // Repository ufficiale degli artefatti del motore Flutter
-        maven("https://storage.googleapis.com/download.flutter.io")
+        flatDir {
+            dirs("/tmp/flutter_aar")
+        }
     }
 }
 
 rootProject.name = "TacUNS"
 include(":app")
-apply(from = file("security_ui/.android/include_flutter.groovy"))
