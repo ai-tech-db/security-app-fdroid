@@ -25,3 +25,4 @@ __pycache__/
 *.pyc
 *.log
 settings.gradle.kts.bak
+flutter_engine_jars/
