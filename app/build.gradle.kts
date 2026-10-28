@@ -112,5 +112,4 @@ configurations {
 }
 
 dependencies {
-    implementation("io.flutter:flutter_embedding_release:1.0.0-6b24e1b529bc46df7ff397667502719a2a8b6b72")
 }
