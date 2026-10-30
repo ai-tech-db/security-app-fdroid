@@ -1,6 +1,6 @@
 # 🛡️ Security APP by AI-Tech-DB
 
-Security APP is a modern, privacy-focused local VPN firewall and security monitor for Android. 
+Security APP is a modern, privacy-focused local VPN firewall and security monitor for Android.
 Unlike commercial VPNs, it does not route your data to a remote server. It creates a local VPN tunnel directly on your device to intercept and filter traffic, ensuring maximum privacy.
 
 Built with a powerful Kotlin core (VPN, DNS, Room) and a stunning Flutter UI, it protects your device against trackers, malicious domains, and suspicious apps.
@@ -37,60 +37,95 @@ https://github.com/user-attachments/assets/22d55705-7e8d-4a34-aeff-7ce5b1577b79
 - MethodChannel / EventChannel (Bridge between Flutter and Kotlin)
 
 ### Build Environment
-- Docker (tacuns-dev container)
+- Docker (tacuns-dev container) for local development
 - Android SDK 36 / Min SDK 29
+- F-Droid build server for distribution
 
 ## 📂 Project Structure
 
-```text
-/
-├── app/                    # Android native module (Kotlin)
-├── security_ui/            # Flutter module (Dart)
-├── gradle/                 # Gradle wrapper
-├── build.gradle.kts
-├── settings.gradle.kts
-├── README.md
-├── LICENSE
-├── assets/                 # Demo video and media
-└── .gitignore
-```
+    /
+    ├── app/                    # Android native module (Kotlin)
+    ├── security_ui/            # Flutter module (Dart)
+    ├── gradle/                 # Gradle wrapper
+    ├── build.gradle.kts        # Root Gradle build (Kotlin DSL)
+    ├── settings.gradle.kts     # Gradle settings (repositories, plugins)
+    ├── build.sh                # F-Droid build script
+    ├── metadata/               # F-Droid metadata (in fdroiddata repo)
+    ├── README.md
+    ├── LICENSE
+    └── .gitignore
 
 ## 🚀 Build & Run
-Prerequisites
-Docker installed on your host.
 
-Android SDK in /opt/android-sdk.
+### Prerequisites
 
-Flutter SDK in /opt/flutter.
+- Docker installed on your host (for local development).
+- Android SDK in /opt/android-sdk.
+- Flutter SDK in /opt/flutter.
+- A connected Android device (via USB) or emulator.
 
-A connected Android device (via USB) or emulator.
+### Local Development (Docker)
 
-### Build the Flutter AAR (if you modify Dart code)
-```bash
-docker exec -it -u root tacuns-dev bash -c '
-cd /security_ui
-flutter build aar --no-debug --no-profile
-'
-```
+Build the Flutter AAR (if you modify Dart code):
 
-### Build the Android APK
-```bash
-docker exec -it -u root tacuns-dev bash -c '
-cd /app
-./gradlew :app:assembleRelease --no-daemon
-'
-```
+    docker exec -it -u root tacuns-dev bash -c '
+    cd /security_ui
+    flutter build aar --no-debug --no-profile
+    '
+
+Build the Android APK:
+
+    docker exec -it -u root tacuns-dev bash -c '
+    cd /app
+    ./gradlew :app:assembleRelease --no-daemon
+    '
 
 The APK will be generated at: app/build/outputs/apk/release/app-release.apk
 
-### Install on device
-```bash
-docker exec -it -u root tacuns-dev bash -c '
-adb install -r /app/app/build/outputs/apk/release/app-release.apk
-'
-```
+Install on device:
+
+    docker exec -it -u root tacuns-dev bash -c '
+    adb install -r /app/app/build/outputs/apk/release/app-release.apk
+    '
+
+### F-Droid Build
+
+The F-Droid build is driven by build.sh, which is called from the F-Droid metadata (metadata/io.github.aitechdb.securityapp.yml in the fdroiddata repo).
+
+build.sh does the following:
+
+1. Sets up the Flutter SDK path and the CFUG mirrors (storage.flutter-io.cn, pub.flutter-io.cn) to avoid F-Droid network blocks.
+2. Runs flutter build aar in security_ui/.
+3. Copies the generated AARs to /tmp/flutter_aar/ for flatDir resolution.
+4. Copies the Flutter engine .jar files from the Gradle cache to /tmp/flutter_aar/.
+5. Moves security_ui/ to /tmp/security_ui_backup to avoid Gradle 8.7 "Project directory is not part of the build" errors.
+6. Runs gradle :app:assembleRelease.
+
+The F-Droid metadata declares:
+
+    Builds:
+      - versionName: 1.0.0
+        versionCode: 2003
+        commit: <hash>
+        gradle:
+          - yes
+        output: app/build/outputs/apk/release/*.apk
+        srclibs:
+          - flutter@3.35.7
+        build: bash build.sh $$flutter$$
+
+### Updating the App
+
+To publish a new version:
+
+1. Increment versionCode and versionName in app/build.gradle.kts.
+2. Commit and push to security-app-fdroid.
+3. Update versionCode, versionName, and commit: in the F-Droid metadata.
+4. Push the metadata to the fdroiddata repo.
+5. F-Droid will rebuild automatically.
 
 ## 🔒 Security & Privacy
+
 All filtering happens locally on your device. No data is sent to remote servers.
 
 The VPN service uses a foreground notification to stay alive.
@@ -98,6 +133,7 @@ The VPN service uses a foreground notification to stay alive.
 The app requests only the necessary permissions (BIND_VPN_SERVICE, FOREGROUND_SERVICE, etc.).
 
 ## 🧪 Testing & Verification
+
 Check VPN service logs: adb logcat -s DnsInterceptor:D *:S
 
 Verify VPN process: adb shell ps -A | grep tacu
@@ -105,22 +141,21 @@ Verify VPN process: adb shell ps -A | grep tacu
 Check VPN permission: adb shell dumpsys package com.tacu.nsfwzerotrust | grep BIND_VPN_SERVICE
 
 ## 📝 Notes
-If you modify Dart code, you MUST regenerate the Flutter AAR and rebuild the Android app.
 
-The Gradle cache is located at /root/.gradle inside the container. If the build behaves strangely, run ./gradlew --stop and delete .gradle in the project directory.
-
-The build uses local.properties with sdk.dir=/opt/android-sdk and flutter.sdk=/opt/flutter.
+- If you modify Dart code, you MUST regenerate the Flutter AAR and rebuild the Android app.
+- The Gradle cache for F-Droid is in .gradle-cache/ (set via GRADLE_USER_HOME).
+- The build uses local.properties with sdk.dir and flutter.sdk.
+- app/proguard-rules.pro contains -dontwarn rules for Flutter plugins referenced by GeneratedPluginRegistrant. Without these, R8 fails in release mode.
 
 ## 📄 License & Attribution
+
 This project is licensed under the GNU General Public License v3.0 (GPLv3). See the LICENSE file for details.
 
-What we built (AI-Tech-DB)
+**What we built (AI-Tech-DB)**
 The Flutter-based user interface (Welcome Screen, Setup, Dashboard, Log, Settings), the native Android bridge (MainActivity.kt, MethodChannels), and all the integration logic were designed and written from scratch by AI-Tech-DB.
 
-What is derived (TacUNS)
+**What is derived (TacUNS)**
 The core firewall engine is based on the original TacUNS project, which was licensed under the Apache License 2.0. The original Apache 2.0 code has been modified and integrated into this GPLv3 project. See the NOTICE file for full attribution details.
-
-
 
 ## 📱 Follow Us & Full Video
 
