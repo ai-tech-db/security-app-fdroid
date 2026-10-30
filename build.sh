@@ -16,7 +16,6 @@ export PUB_HOSTED_URL="https://pub.flutter-io.cn"
 echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
-# Inizializza Flutter (F-Droid userà la sua versione di Gradle)
 flutter --version
 
 RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
