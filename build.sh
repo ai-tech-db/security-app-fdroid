@@ -16,15 +16,7 @@ export PUB_HOSTED_URL="https://pub.flutter-io.cn"
 echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
-mkdir -p gradle/wrapper
-cat > gradle/wrapper/gradle-wrapper.properties <<'GRADLEPROPS'
-distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-bin.zip
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-GRADLEPROPS
-
+# Inizializza Flutter (F-Droid userà la sua versione di Gradle)
 flutter --version
 
 RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
