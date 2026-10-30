@@ -27,6 +27,9 @@ cd "$PROJECT_DIR/security_ui"
 flutter pub get
 flutter build aar --no-debug --no-profile
 
+mkdir -p /tmp/flutter_aar_repo
+cp -r build/host/outputs/repo/* /tmp/flutter_aar_repo/
+
 mkdir -p /tmp/flutter_aar
 find build -name "*.aar" -exec cp {} /tmp/flutter_aar/ \;
 
