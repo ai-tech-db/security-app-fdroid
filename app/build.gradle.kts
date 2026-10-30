@@ -110,13 +110,3 @@ configurations {
     getByName("profileImplementation") {
     }
 }
-
-dependencies {
-}
-
-dependencies {
-    releaseImplementation("io.flutter:flutter_embedding_release:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca")
-    releaseImplementation("io.flutter:armeabi_v7a_release:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca")
-    releaseImplementation("io.flutter:arm64_v8a_release:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca")
-    releaseImplementation("io.flutter:x86_64_release:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca")
-}
