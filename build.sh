@@ -28,15 +28,24 @@ fi
 sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
-# Crea un settings vuoto in una directory temporanea per isolare resolve_dependencies
+# Crea un settings temporaneo VUOTO per isolare lo script Flutter da PREFER_SETTINGS
 TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
 cat > "$TMPDIR/settings.gradle.kts" <<'EMPTYSETTINGS'
-// Settings vuoto per isolare resolve_dependencies dal PREFER_SETTINGS del progetto
+// Settings vuoto: nessun PREFER_SETTINGS, nessun repository
 EMPTYSETTINGS
 
 echo "===== RESOLVING FLUTTER DEPENDENCIES ====="
-( cd "$TMPDIR" && gradle --settings-file "$TMPDIR/settings.gradle.kts" -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
-rm -rf "$TMPDIR"
+
+# Esegui da PROJECT_DIR (gradlew-fdroid trova la versione) ma con settings temporaneo vuoto
+(
+    cd "$PROJECT_DIR"
+    gradle \
+        --settings-file "$TMPDIR/settings.gradle.kts" \
+        -b "$RESOLVE_SCRIPT" \
+        resolveDependencies \
+        --no-daemon
+)
 
 echo "===== BUILDING FLUTTER AAR ====="
 cd "$PROJECT_DIR/security_ui"
@@ -53,3 +62,4 @@ cd "$PROJECT_DIR"
 gradle :app:assembleRelease --no-daemon
 
 echo "===== BUILD COMPLETED ====="
+
