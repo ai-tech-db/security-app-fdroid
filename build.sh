@@ -16,6 +16,15 @@ echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
 flutter --version
 
+mkdir -p gradle/wrapper
+cat > gradle/wrapper/gradle-wrapper.properties <<'GRADLEPROPS'
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+GRADLEPROPS
+
 RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
 if [ ! -f "$RESOLVE_SCRIPT" ]; then
     echo "ERRORE: resolve_dependencies.gradle.kts non trovato."
@@ -26,11 +35,11 @@ sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
 TMPDIR=$(mktemp -d)
-( cd "$TMPDIR" && gradle --gradle-version 8.7 -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
+( cd "$TMPDIR" && gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
 rm -rf "$TMPDIR"
 
 (cd security_ui && flutter pub get && flutter build aar --no-debug --no-profile)
 mkdir -p /tmp/flutter_aar
 find security_ui/build -name "*.aar" -exec cp {} /tmp/flutter_aar/ \;
 mv security_ui /tmp/security_ui_backup
-gradle --gradle-version 8.7 :app:assembleRelease --no-daemon
+gradle :app:assembleRelease --no-daemon
