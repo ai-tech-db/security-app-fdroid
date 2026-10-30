@@ -25,8 +25,9 @@ fi
 sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
-# Esegui resolveDependencies con settings vuoto per evitare conflitti con PREFER_SETTINGS
-gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon --settings-file /dev/null
+TMPDIR=$(mktemp -d)
+( cd "$TMPDIR" && gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
+rm -rf "$TMPDIR"
 
 (cd security_ui && flutter pub get && flutter build aar --no-debug --no-profile)
 mkdir -p /tmp/flutter_aar
