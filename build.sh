@@ -19,34 +19,6 @@ echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
 flutter --version
 
-RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
-if [ ! -f "$RESOLVE_SCRIPT" ]; then
-    echo "ERRORE: resolve_dependencies.gradle.kts non trovato."
-    exit 1
-fi
-
-sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
-sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
-
-# Crea un settings temporaneo che dichiara resolve_dependencies come build file root
-TMPDIR=$(mktemp -d)
-trap 'rm -rf "$TMPDIR"' EXIT
-cat > "$TMPDIR/settings.gradle.kts" <<EMPTYSETTINGS
-rootProject.name = "resolve-dependencies"
-rootProject.buildFileName = "$RESOLVE_SCRIPT"
-EMPTYSETTINGS
-
-echo "===== RESOLVING FLUTTER DEPENDENCIES ====="
-
-# Esegui da PROJECT_DIR (gradlew-fdroid trova la versione) con settings che dichiara il build file
-(
-    cd "$PROJECT_DIR"
-    gradle \
-        --settings-file "$TMPDIR/settings.gradle.kts" \
-        resolveDependencies \
-        --no-daemon
-)
-
 echo "===== BUILDING FLUTTER AAR ====="
 cd "$PROJECT_DIR/security_ui"
 flutter pub get
