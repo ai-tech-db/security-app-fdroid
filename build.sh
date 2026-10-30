@@ -14,21 +14,21 @@ export PUB_HOSTED_URL="https://pub.flutter-io.cn"
 echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
+# Inizializza Flutter e crea engine.stamp (necessario per resolve_dependencies)
+echo "=== Inizializzazione Flutter ==="
+flutter --version
+
 RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
 if [ ! -f "$RESOLVE_SCRIPT" ]; then
-    echo "ERRORE: resolve_dependencies.gradle.kts non trovato in $FLUTTER_SDK/packages/flutter_tools/gradle/"
+    echo "ERRORE: resolve_dependencies.gradle.kts non trovato."
     exit 1
 fi
 
-echo "=== flutterRoot prima del patch ==="
-grep -n "flutterRoot" "$RESOLVE_SCRIPT" || true
-
+# Patch del bug di nullability
 sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
-echo "=== flutterRoot dopo il patch ==="
-grep -n "flutterRoot" "$RESOLVE_SCRIPT" || true
-
+echo "=== Esecuzione resolveDependencies ==="
 gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon
 
 (cd security_ui && flutter pub get && flutter build aar --no-debug --no-profile)
