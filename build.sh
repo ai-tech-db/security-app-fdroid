@@ -26,11 +26,11 @@ sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
 TMPDIR=$(mktemp -d)
-( cd "$TMPDIR" && gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
+( cd "$TMPDIR" && gradle --gradle-version 8.7 -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
 rm -rf "$TMPDIR"
 
 (cd security_ui && flutter pub get && flutter build aar --no-debug --no-profile)
 mkdir -p /tmp/flutter_aar
 find security_ui/build -name "*.aar" -exec cp {} /tmp/flutter_aar/ \;
 mv security_ui /tmp/security_ui_backup
-gradle :app:assembleRelease --no-daemon
+gradle --gradle-version 8.7 :app:assembleRelease --no-daemon
