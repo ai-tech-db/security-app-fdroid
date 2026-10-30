@@ -14,8 +14,6 @@ export PUB_HOSTED_URL="https://pub.flutter-io.cn"
 echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
-# Inizializza Flutter e crea engine.stamp (necessario per resolve_dependencies)
-echo "=== Inizializzazione Flutter ==="
 flutter --version
 
 RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
@@ -24,12 +22,11 @@ if [ ! -f "$RESOLVE_SCRIPT" ]; then
     exit 1
 fi
 
-# Patch del bug di nullability
 sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
-echo "=== Esecuzione resolveDependencies ==="
-gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon
+# Esegui resolveDependencies con settings vuoto per evitare conflitti con PREFER_SETTINGS
+gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon --settings-file /dev/null
 
 (cd security_ui && flutter pub get && flutter build aar --no-debug --no-profile)
 mkdir -p /tmp/flutter_aar
