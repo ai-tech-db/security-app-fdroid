@@ -14,15 +14,21 @@ export PUB_HOSTED_URL="https://pub.flutter-io.cn"
 echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
-# USA SOLO lo script Groovy (.gradle). Il .kts ha un bug di nullability in Flutter 3.35.7.
-RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle"
+RESOLVE_SCRIPT="$FLUTTER_SDK/packages/flutter_tools/gradle/resolve_dependencies.gradle.kts"
 if [ ! -f "$RESOLVE_SCRIPT" ]; then
-    echo "ERRORE: resolve_dependencies.gradle (Groovy) non trovato."
-    echo "Il file .kts è buggato in questa versione di Flutter. Serve il .gradle."
+    echo "ERRORE: resolve_dependencies.gradle.kts non trovato in $FLUTTER_SDK/packages/flutter_tools/gradle/"
     exit 1
 fi
 
-echo "Uso: $RESOLVE_SCRIPT"
+echo "=== flutterRoot prima del patch ==="
+grep -n "flutterRoot" "$RESOLVE_SCRIPT" || true
+
+sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
+sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
+
+echo "=== flutterRoot dopo il patch ==="
+grep -n "flutterRoot" "$RESOLVE_SCRIPT" || true
+
 gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon
 
 (cd security_ui && flutter pub get && flutter build aar --no-debug --no-profile)
