@@ -28,8 +28,15 @@ fi
 sed -i 's/flutterRoot\.isDirectory/flutterRoot!!.isDirectory/g' "$RESOLVE_SCRIPT"
 sed -i 's/flutterRoot\.absolutePath/flutterRoot!!.absolutePath/g' "$RESOLVE_SCRIPT"
 
+# Crea un settings vuoto in una directory temporanea per isolare resolve_dependencies
+TMPDIR=$(mktemp -d)
+cat > "$TMPDIR/settings.gradle.kts" <<'EMPTYSETTINGS'
+// Settings vuoto per isolare resolve_dependencies dal PREFER_SETTINGS del progetto
+EMPTYSETTINGS
+
 echo "===== RESOLVING FLUTTER DEPENDENCIES ====="
-gradle -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon
+( cd "$TMPDIR" && gradle --settings-file "$TMPDIR/settings.gradle.kts" -b "$RESOLVE_SCRIPT" resolveDependencies --no-daemon )
+rm -rf "$TMPDIR"
 
 echo "===== BUILDING FLUTTER AAR ====="
 cd "$PROJECT_DIR/security_ui"
