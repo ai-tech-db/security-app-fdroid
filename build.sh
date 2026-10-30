@@ -14,6 +14,9 @@ export PATH="$FLUTTER_SDK/bin:$PATH"
 export FLUTTER_STORAGE_BASE_URL="https://storage.flutter-io.cn"
 export PUB_HOSTED_URL="https://pub.flutter-io.cn"
 
+# Forza la stessa cache Gradle per flutter build aar e gradle :app
+export GRADLE_USER_HOME="$PROJECT_DIR/.gradle-cache"
+
 echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 echo "flutter.sdk=$FLUTTER_SDK" >> local.properties
 
