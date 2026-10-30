@@ -32,8 +32,8 @@ android {
         applicationId = "io.github.aitechdb.securityapp"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2003
+        versionName = "1.0.0"
         buildConfigField("boolean", "BLOCK_ALL_SCREENSHOTS", "false")
 
         ndk {
