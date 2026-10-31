@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/22d55705-7e8d-4a34-aeff-7ce5b1577b79
     ├── build.gradle.kts        # Root Gradle build (Kotlin DSL)
     ├── settings.gradle.kts     # Gradle settings (repositories, plugins)
     ├── build.sh                # F-Droid build script
-    ├── metadata/               # F-Droid metadata (in fdroiddata repo)
+    ├── fastlane/               # App metadata (descriptions, screenshots, changelogs)
     ├── README.md
     ├── LICENSE
     └── .gitignore
